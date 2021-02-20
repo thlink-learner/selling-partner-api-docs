@@ -145,7 +145,7 @@ Selling Partner API endpoints are associated with a particular AWS Region. The A
 <td>us-east-1</td>
 </tr>
 <tr class="even">
-<td>Europe (Spain, UK, France, Netherlands, Germany, Italy, Turkey, U.A.E, and India marketplaces)</td>
+<td>Europe (Spain, UK, France, Netherlands, Germany, Italy, Sweden, Poland, Turkey, U.A.E, and India marketplaces)</td>
 <td>https://sellingpartnerapi-eu.amazon.com</td>
 <td>eu-west-1</td>
 </tr>
@@ -182,6 +182,7 @@ The `marketplaceId` identifies the marketplace for a request.
 | Netherlands          | A1805IZSGTT6HS    | NL               |
 | Germany              | A1PA6795UKMFR9    | DE               |
 | Italy                | APJ6JRA9NG5V4     | IT               |
+| Sweden               | A2NODRKZP88ZB9    | SE               |
 | Turkey               | A33AVAJ2PDY3EV    | TR               |
 | United Arab Emirates | A2VIGQ35RCS4UG    | AE               |
 | India                | A21TJRUUN4KGV     | IN               |
@@ -374,7 +375,7 @@ Adding an [AWS Security Token Service (AWS STS)](https://docs.aws.amazon.com/STS
 
 1.  If you are not already signed in, sign into the AWS Management Console and open the IAM console at [console.aws.amazon.com/iam](https://console.aws.amazon.com/iam).
 
-3.  In the navigation pane at left, click **Users** and then click the user that that you want to add the AWS STS policy to. In this workflow, choose the user you created in [Step 2. Create an IAM user](#Step-2-Create-an-IAM-user). You might choose a different IAM user for other use cases.
+3.  In the navigation pane at left, click **Users** and then click the user that you want to add the AWS STS policy to. In this workflow, choose the user you created in [Step 2. Create an IAM user](#Step-2-Create-an-IAM-user). You might choose a different IAM user for other use cases.
 
 4.  On the **Permissions** tab, click **Add inline policy**.
 
@@ -449,13 +450,13 @@ If a seller authorizes your application starting from your own website (the [Web
 
 2.  Combine the Seller Central URL with `/apps/authorize/consent?{your application ID}`.
 
-    Example: `https://sellercentral.amazon.com/apps/authorize/consent?application\_id=amzn1.sellerapps.app.0bf296b5-36a6-4942-a13e-EXAMPLEfcd28`
+    Example: `https://sellercentral.amazon.com/apps/authorize/consent?application_id=amzn1.sellerapps.app.0bf296b5-36a6-4942-a13e-EXAMPLEfcd28`
 
 You will need an OAuth authorization URI for every marketplace where you want sellers to authorize your application. Simply use the appropriate Seller Central URL in each OAuth authorization URI that you need.
 
-**Note.** For sellers who sell in the Spain, UK, France, Germany, and Italy marketplaces, you can use the Seller Central URL for Europe when creating an OAuth authorization URI. Example: `https://sellercentral-europe.amazon.com/apps/authorize/consent?application\_id=amzn1.sellerapps.app.0bf296b5-36a6-4942-a13e-EXAMPLEfcd28`
+**Note.** For sellers who sell in the Spain, UK, France, Germany, and Italy marketplaces, you can use the Seller Central URL for Europe when creating an OAuth authorization URI. Example: `https://sellercentral-europe.amazon.com/apps/authorize/consent?application_id=amzn1.sellerapps.app.0bf296b5-36a6-4942-a13e-EXAMPLEfcd28`
 
-If you are creating an OAuth authorization URI for testing your authorization workflow, add the version=beta parameter. This indicates that the authorization workflow is for an application in draft status. Example: `https://sellercentral-europe.amazon.com/apps/authorize/consent?application\_id=amzn1.sellerapps.app.0bf296b5-36a6-4942-a13e-EXAMPLEfcd28?version=beta`
+If you are creating an OAuth authorization URI for testing your authorization workflow, add the version=beta parameter. This indicates that the authorization workflow is for an application in draft status. Example: `https://sellercentral-europe.amazon.com/apps/authorize/consent?application_id=amzn1.sellerapps.app.0bf296b5-36a6-4942-a13e-EXAMPLEfcd28&version=beta`
 
 For information about creating and testing an authorization workflow, see [Marketplace Appstore workflow](#marketplace-appstore-workflow) and [Website workflow](#website-workflow).
 
@@ -875,7 +876,7 @@ To implement the full OAuth authorization workflow, see [Authorizing Selling Par
 
     The Login with Amazon (LWA) refresh token appears. If your selling account is linked to accounts from other regions, you will receive a separate refresh token for each region. Your application is now authorized to access your selling account(s).
 
-    **Important:** Click **Generate refresh token** just once to get your refresh token, and then save it for making calls to the Selling Partner API. If you click the **Generate refresh token** multiple times you will get a new refresh token each time, invalidating previous refresh tokens.
+    **Important:** Click **Generate refresh token** to get your refresh token. Generating a new refresh token does not invalidate previous refresh tokens.
 
 The refresh token is a long-lived token that you exchange for a short-lived access token. An access token must be included with every request to the Selling Partner API. Once an access token is issued it is valid for one hour. The same access token can be used for multiple API calls, until it expires. For more information, see [Step 1. Request a Login with Amazon access token](#step-1-request-a-login-with-amazon-access-token)).
 
@@ -1341,7 +1342,7 @@ To sign a request to the Selling Partner API, see [Step 4. Create and sign your 
 
 ## Step 4. Create and sign your request
 
-The Selling Partner API uses the AWS [Signature Version 4 Signing Process](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) for authenticating requests. When you send HTTP requests to the Selling Partner API, you sign the requests so that Amazon can identify who sent them. You sign requests using your AWS access key, which consists of an access key ID and a secret access key. For information about getting your AWS access key, see [Step 2. Create an IAM user](#step-2-create-an-iam-user).
+The Selling Partner API uses the AWS [Signature Version 4 Signing Process](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) for authenticating requests. When you send HTTP requests to the Selling Partner API, you sign the requests so that Amazon can identify who sent them. You sign requests using your AWS access keys, which consists of an access key ID and a secret access key. Amazon recommends using the [AWS Security Token Service (AWS STS)](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html) to request temporary AWS access keys to sign your requests. See [Registering your Selling Partner API application](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/developer-guide/SellingPartnerApiDeveloperGuide.md#registering-your-selling-partner-api-application) to create an IAM user (with an AWS STS policy attached) that assumes an IAM role. You then register your application using the IAM role. For more information about using AWS STS and the AWS SDKs that can help with your implementation, see [Requesting temporary security credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html) in the AWS documentation.
 
 **Note:** You need to learn how to sign HTTP requests only when you manually create them. When you use the one of the AWS SDKs to calculate signatures for you, the SDK automatically signs the requests with the AWS access key that you specify when you configure it. When you use an SDK you don't need to learn how to sign requests yourself. Java developers, for example, can use [AWS4Signer.java](https://github.com/aws/aws-sdk-java/blob/master/aws-java-sdk-core/src/main/java/com/amazonaws/auth/AWS4Signer.java) from the AWS SDK for Java as a model for calculating a signature. You can find SDKs for other languages in the [AWS GitHub repository](https://github.com/aws).
 
@@ -1567,7 +1568,7 @@ If a selling partner has authorized you to make calls to Amazon Marketplace Web 
 
 The Selling Partner API provides a sandbox environment that allows you to test your applications without affecting production data or triggering real-world events. Making sandbox calls to the Selling Partner API is identical to making production calls except you direct the calls to the [Selling Partner API sandbox endpoints](#selling-partner-api-sandbox-endpoints). Calling the sandbox endpoints returns static, mocked responses for all Selling Partner APIs. You can refer to these mocked responses in the Swagger model JSON file for the API that you want to call. For more information, see [How to make a sandbox call to the Selling Partner API](#how-to-make-a-sandbox-call-to-the-selling-partner-api).
 
-The Selling Partner API sandbox works like many mocking frameworks, in that it uses pattern matching to return a specified response when the specified parameters are present. A developer receives a response defined in the x- amazon-spds-sandbox-behaviors object when they send a request that matches the specified parameters. If the API requires any parameters that aren't specified in the x-amazon-spds-sandbox-behaviors object, the sandbox provides the response regardless of the parameter values in the request, as long as the request is valid.
+The Selling Partner API sandbox works like many mocking frameworks, in that it uses pattern matching to return a specified response when the specified parameters are present. A developer receives a response defined in the `x-amazon-spds-sandbox-behaviors` object when they send a request that includes the specified parameters. Note that while the `x-amazon-spds-sandbox-behaviors` section contains the parameters that are needed to match a mock response, it does not necessarily contain all of the parameters that are required for a successful response. To get a successful response, be sure to that your request is valid and includes all required parameters as defined in the corresponding Swagger model.
 
 **Important:** The sandbox is for testing functionality, not scalability testing. Calls to sandbox endpoints are subject to these throttling limits: **rate** = five requests per second; **burst** = 15. For more information about throttling see "Usage Plans and Rate Limits" in the Selling Partner API documentation.
 
@@ -1579,23 +1580,23 @@ The Selling Partner API sandbox works like many mocking frameworks, in that it u
 
 2.  Open the folder for the API for which you want to make a sandbox call.
 
-3.  Click the JSON file for the API that you want.
+3.  Click the Swagger model JSON file for the API that you want.
 
     The JSON code displays.
 
-4.  Search the code for "x-amazon-spds-sandbox-behaviors".
+4.  Search the code for `x-amazon-spds-sandbox-behaviors`.
 
-The x-amazon-spds-sandbox-behaviors objects of the JSON file contain request and response examples for sandbox calls to the API. If the request example contains parameters, use them in the following step.
+The `x-amazon-spds-sandbox-behaviors` objects of the JSON file contain request and response examples for sandbox calls to the API. If the request example contains parameters, use them in the following step.
 
 ### Step 2. Make a sandbox call to an API
 
 Make a sandbox call to an API in the same way you would make a production call, with these differences:
 
-1.  If the request object in the x-amazon-spds-sandbox-behaviors object of the JSON file contains one or more parameter/value pairs, specify these in your call.
+1.  If the `x-amazon-spds-sandbox-behaviors` object of the Swagger model JSON file contains one or more parameters, include these in your call. If the API requires parameters in addition to those contained in the `x-amazon-spds-sandbox-behaviors` object, be sure to also include those required parameters in your call.
 
 2.  Direct your call to one of the [selling Partner API sandbox endpoints](#selling-partner-api-sandbox-endpoints).
 
-    You should receive a response that matches the payload object contained in the x-amazon-spds-sandbox-behaviors object of the JSON file.
+    You should receive a response that matches the payload object contained in the `x-amazon-spds-sandbox-behaviors` object of the JSON file.
 
 ## Selling Partner API sandbox endpoints
 
