@@ -30,33 +30,34 @@
 - [Viewing your developer information](#viewing-your-developer-information)
 
 - [Authorizing Selling Partner API applications](#authorizing-selling-partner-api-applications)
-
-  - [Marketplace Appstore workflow](#marketplace-appstore-workflow)
-
-    - [Step 1. The seller initiates authorization from the Marketplace Appstore](#step-1-the-seller-initiates-authorization-from-the-marketplace-appstore)
-
-    - [Step 2. The seller consents to authorize your application](#Step-2-The-seller-consents-to-authorize-your-application)
-
-    - [Step 3. The seller signs into your website](#step-3-the-seller-signs-into-your-website)
-
-    - [Step 4. Amazon sends you the authorization information](#step-4-amazon-sends-you-the-authorization-information)
-
-    - [Step 5. Your application exchanges the LWA authorization code for an LWA refresh token](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token)
-
-  - [Website workflow](#website-workflow)
-
-    - [Step 0. Set up an "Authorize" button](#step-0-set-up-an-"authorize"-button)
-
-    - [Step 1. The seller initiates authorization from your website](#Step-1-The-seller-initiates-authorization-from-your-website)
-
-    - [Step 2. The seller consents to authorize the application](#Step-2-The-seller-consents-to-authorize-the-application)
-
-    - [Step 3. Amazon sends you the authorization information](#Step-3-Amazon-sends-you-the-authorization-information)
-
-    - [Step 4. Your application exchanges the LWA authorization code for a LWA refresh token](#Step-4-Your-application-exchanges-the-LWA-authorization-code-for-a-LWA-refresh-token)
+- [Marketplace Appstore workflow](#marketplace-appstore-workflow)
+  
+  - [Step 1. The seller initiates authorization from the Marketplace Appstore](#step-1-the-seller-initiates-authorization-from-the-marketplace-appstore)
+  
+  - [Step 2. The seller consents to authorize your application](#Step-2-The-seller-consents-to-authorize-your-application)
+  
+  - [Step 3. The seller signs into your website](#step-3-the-seller-signs-into-your-website)
+  
+  - [Step 4. Amazon sends you the authorization information](#step-4-amazon-sends-you-the-authorization-information)
+  
+  - [Step 5. Your application exchanges the LWA authorization code for an LWA refresh token](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token)
+  
+- [Website workflow](#website-workflow)
+  
+  - [Step 0. Set up an "Authorize" button](#step-0-set-up-an-"authorize"-button)
+  
+  - [Step 1. The seller initiates authorization from your website](#Step-1-The-seller-initiates-authorization-from-your-website)
+  
+  - [Step 2. The seller consents to authorize the application](#Step-2-The-seller-consents-to-authorize-the-application)
+  
+  - [Step 3. Amazon sends you the authorization information](#Step-3-Amazon-sends-you-the-authorization-information)
+  
+  - [Step 4. Your application exchanges the LWA authorization code for a LWA refresh token](#Step-4-Your-application-exchanges-the-LWA-authorization-code-for-a-LWA-refresh-token)
 
 
 - [Self authorization](#self-authorization)
+
+- [Authorization with the Restricted Data Token](#Authorization-with-the-Restricted-Data-Token)
 
 - [Generating a Java SDK with LWA token exchange and authentication](#generating-a-java-sdk-with-lwa-token-exchange-and-authentication)
 
@@ -552,7 +553,7 @@ Your website's sign-in page appears.
 <tbody>
 <tr class="odd">
 <td><strong>redirect_uri</strong></td>
-<td>A URI for redirecting the browser to your application.</td>
+<td>A URI for redirecting the browser to your application. This must an OAuth Redirect URI that you specified when you <a href="#step-6-register-your-application">registered your application</a>. If you do not include the <strong>redirect_uri</strong> parameter, the default is the first OAuth Redirect URI that you specified when you registered your application.</td>
 </tr>
 <tr class="even">
 <td><strong>amazon_state</strong></td>
@@ -580,14 +581,14 @@ https://amazon.com/apps/authorize/confirm/amzn1.sellerapps.app.2eca283f-9f5a-4d1
 
 Seller Central briefly displays a page indicating that Amazon is authorizing you to access the seller's data. While this page is displayed, the following actions take place:
 
-1.  Amazon loads your redirect URI into the browser, adding the following query parameters:
+1.  Amazon loads your OAuth Redirect URI into the browser (the first one you specified when you [registered you application](#Step-6-Register-your-application)), adding the following query parameters:
 
 | **Parameter**| **Description**|
 | ------------------------ | -----------------------|
 | **state**  | The state value that you passed in the previous step.  |
-| **selling_partner_id** | The seller ID of the seller who is authorizing your application. |
-| **mws_auth_token**  | The **MWSAuthToken** value that you use when you create a query string for a call to Amazon Marketplace Web Service. The mws_auth_token parameter is only passed when the seller is authorizing a hybrid Selling Partner API application. For more information, see [Hybrid Selling Partner API applications](#hybrid-selling-partner-api-applications).    |
-| **spapi_oauth_code**   | The Login with Amazon (LWA) authorization code that you exchange for an LWA refresh token. For more information, see [Step 5. Your](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token) [application exchanges the LWA authorization code for an LWA](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token) [refresh token](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token). |
+| **selling\_partner\_id** | The seller ID of the seller who is authorizing your application. |
+| **mws\_auth\_token**  |  The **MWSAuthToken** value that you use when you create a query string for a call to Amazon Marketplace Web Service. The mws\_auth\_token parameter is only passed when the seller is authorizing a hybrid Selling Partner API (SP-API) application. Note that if you are the seller authorizing the hybrid SP-API application and the application owner (meaning you self-authorized your own Amazon MWS application) you will not receive the MWSAuthToken. For more information, see [Hybrid Selling Partner API applications](#hybrid-selling-partner-api-applications).|
+| **spapi\_oauth\_code**   | The Login with Amazon (LWA) authorization code that you exchange for an LWA refresh token. For more information, see [Step 5. Your](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token) [application exchanges the LWA authorization code for an LWA](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token) [refresh token](#step-5-your-application-exchanges-the-lwa-authorization-code-for-an-lwa-refresh-token). |
 
    For example:
 ```
@@ -753,14 +754,14 @@ The seller arrives at the sign-in page of Seller Central.
 
 Seller Central briefly displays a page indicating that Amazon is authorizing you to access the seller's data. While that page is displayed, the following actions take place:
 
-1.  Amazon loads your redirect URI into the browser, adding the following query parameters:
+1.  Amazon loads your OAuth Redirect URI into the browser (the first one you specified when you [registered you application](#Step-6-Register-your-application)), adding the following query parameters:
 
 | **Parameter**| **Description**|
 | ------------------------ | ---------------------- |
 | **state** | The state value from [Step 1. The seller initiates authorization from](#step-1-the-seller-initiates-authorization-from-your-website) [your website](#step-1-the-seller-initiates-authorization-from-your-website). |
-| **selling_partner_id** | The seller ID of the seller who is authorizing your application.    |
-| **mws_auth_token**  | The **MWSAuthToken** value that you use when you create a query string for a call to Amazon Marketplace Web Service. The mws_auth_token parameter is only passed when the seller is authorizing a hybrid Selling Partner API application. For more information, see [Hybrid Selling Partner API applications](#hybrid-selling-partner-api-applications).   |
-| **spapi_oauth_code**   | The Login with Amazon (LWA) authorization code that you exchange for an LWA refresh token. For more information, see [Step 4. Your](#step-4-your-application-exchanges-the-lwa-authorization-code-for-a-lwa-refresh-token) [application exchanges the LWA authorization code for a LWA refresh](#step-4-your-application-exchanges-the-lwa-authorization-code-for-a-lwa-refresh-token) [token](#step-4-your-application-exchanges-the-lwa-authorization-code-for-a-lwa-refresh-token). |
+| **selling\_partner\_id** | The seller ID of the seller who is authorizing your application.    |
+| **mws\_auth\_token**  | The **MWSAuthToken** value that you use when you create a query string for a call to Amazon Marketplace Web Service. The mws\_auth\_token parameter is only passed when the seller is authorizing a hybrid Selling Partner API (SP-API) application. Note that if you are the seller authorizing the hybrid SP-API application and the application owner (meaning you self-authorized your own Amazon MWS application) you will not receive the MWSAuthToken. For more information, see [Hybrid Selling Partner API applications](#hybrid-selling-partner-api-applications).|
+| **spapi\_oauth\_code**   | The Login with Amazon (LWA) authorization code that you exchange for an LWA refresh token. For more information, see [Step 4. Your](#step-4-your-application-exchanges-the-lwa-authorization-code-for-a-lwa-refresh-token) [application exchanges the LWA authorization code for a LWA refresh](#step-4-your-application-exchanges-the-lwa-authorization-code-for-a-lwa-refresh-token) [token](#step-4-your-application-exchanges-the-lwa-authorization-code-for-a-lwa-refresh-token). |
 
 For example:
 ````
@@ -881,6 +882,12 @@ To implement the full OAuth authorization workflow, see [Authorizing Selling Par
 
 The refresh token is a long-lived token that you exchange for a short-lived access token. An access token must be included with every request to the Selling Partner API. Once an access token is issued it is valid for one hour. The same access token can be used for multiple API calls, until it expires. For more information, see [Step 1. Request a Login with Amazon access token](#step-1-request-a-login-with-amazon-access-token)).
 
+# Authorization with the Restricted Data Token
+
+Operations that return restricted data (such as Personally Identifiable information, or PII) are considered restricted operations, and require special authorization in the form of a Restricted Data Token (RDT). You pass an RDT in the x-amz-access-token header when calling a restricted operation. This is in contrast to passing the LWA access token in the header, as you do with all other SP-API operations. For more information, see [Step 3. Add headers to the URI](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/developer-guide/SellingPartnerApiDeveloperGuide.md#step-3-add-headers-to-the-uri) in the Developer Guide.
+
+You can get an RDT by calling the [createRestrictedDataToken](https://github.com/amzn/selling-partner-api-docs/blob/main/references/tokens-api/tokens_2021-03-01.md#createrestricteddatatoken) operation of the Tokens API. See [Restricted operations](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/use-case-guides/tokens-api-use-case-guide/tokens-API-use-case-guide-2021-03-01.md#restricted-operations) of the Tokens API Use Case Guide for a list of restricted operations. The guide also contains instructions for getting an RDT and using it to authorize a call to a restricted operation.
+
 # Generating a Java SDK with LWA token exchange and authentication
 
 **Note to C\# developers**. We also provide a library for generating a C\# SDK with LWA token exchange and authentication. For more information, see README.md in https://github.com/amzn/selling-partner-api-models/tree/main/clients/sellingpartner-api-aa-csharp.
@@ -935,7 +942,7 @@ mvn install:install-file -Dfile=[path to JAR file in "target" folder] -DgroupId=
 ```
 You can find the actual groupId, artifactId, and version values near the top of the **pom.xml** file in the **selling-partner-api-models\\clients\\sellingpartner-api-aa-java** folder.
 
-3.  Add a dependency on the AA library in the **pom.xml** of the client library:
+11.  Add a dependency on the AA library in the **pom.xml** of the client library:
 
     For example:
 ```xml
@@ -1206,7 +1213,9 @@ These instructions show you the steps for making a call to the Selling Partner A
 
 ## Step 1. Request a Login with Amazon access token
 
-A Login with Amazon (LWA) access token authorizes your application to take certain actions on behalf of a seller. An LWA access token expires one hour after it is issued, and must be included with every request to the Selling Partner API.
+A Login with Amazon (LWA) access token authorizes your application to take certain actions on behalf of a seller. An LWA access token expires one hour after it is issued.
+
+**Note about restricted operations.** An LWA access token must be included in calls to all operations *except* restricted operations, which return Personally Identifiable Information (PII). When calling restricted operations, instead of including an LWA access token, you include a Restricted Access Token (RDT). For information about getting RDTs and calling restricted operations, see [Tutorial: Get an RDT and call restricted operations](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/use-case-guides/tokens-api-use-case-guide/tokens-API-use-case-guide-2021-03-01.md#tutorial-get-an-rdt-and-call-restricted-operations) the Tokens API Use Case Guide.
 
 To request an LWA access token, make a secure HTTP POST to the LWA authentication server (`https://api.amazon.com/auth/o2/token`) with the following parameters:
 
@@ -1326,7 +1335,7 @@ Add headers to the URI that you constructed in [Step 2. Construct a Selling Part
 | **Name**     | **Description**  |
 | ---------- | ---------------- |
 | host  | The marketplace endpoint. See [Selling Partner API HTTP methods](#selling-partner-api-http-methods).   |
-| x-amz-access-token | The LWA access token. See [Step 1. Request a Login with Amazon access token](#step-1-request-a-login-with-amazon-access-token). |
+| x-amz-access-token | The LWA access token. See [Step 1. Request a Login with Amazon access token](#step-1-request-a-login-with-amazon-access-token).<br>**Note about restricted operations.** If you are calling a restricted operation, pass in a Restricted Data Token (RDT) here instead of an LWA access token. For information about getting RDTs and calling restricted operations, see the [Tutorial: Get an RDT and call restricted operations](https://github.com/amzn/selling-partner-api-docs/blob/main/guides/en-US/use-case-guides/tokens-api-use-case-guide/tokens-API-use-case-guide-2021-03-01.md#tutorial-get-an-rdt-and-call-restricted-operations) in the Tokens API Use Case Guide. |
 | x-amz-date   | The date and time of your request.    |
 | user-agent    | Your application name and version number, platform, and programming language. These help Amazon diagnose and fix problems you might encounter with the service. See [Include a User-Agent header in all](#include-a-user-agent-header-in-all-requests) [requests](#include-a-user-agent-header-in-all-requests). |
 
